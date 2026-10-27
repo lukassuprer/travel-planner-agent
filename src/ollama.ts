@@ -56,6 +56,48 @@ Call exactly one missing research tool at a time. Do not call assemble_itinerary
     if (!response.ok) throw new Error(`Ollama request failed with HTTP ${response.status}.`);
     const body = await response.json() as { message?: { content?: string } };
     if (!body.message?.content) throw new Error("Ollama returned no structured message.");
-    return JSON.parse(body.message.content) as AgentDecision;
+    const decision = JSON.parse(body.message.content) as AgentDecision;
+    if (decision.type !== "tool_call" || !researchTools.includes(decision.call.name)) {
+      return this.nextResearchDecision(input, researchTools, successfulResult);
+    }
+
+    const alreadyCompleted = successfulResult(decision.call.name) !== undefined;
+    if (alreadyCompleted) {
+      return this.nextResearchDecision(input, researchTools, successfulResult);
+    }
+
+    const args = {
+      destination: input.request.destination,
+      startDate: input.request.startDate,
+      endDate: input.request.endDate,
+      ...(decision.call.name === "attractions_lookup" ? { interests: input.request.interests } : {}),
+    };
+    return {
+      type: "tool_call",
+      call: { name: decision.call.name, args },
+      rationale: decision.rationale,
+    };
+  }
+
+  private nextResearchDecision(
+    input: { request: TripRequest; history: Array<{ call: ToolCall; result: ToolResult }> },
+    researchTools: ToolCall["name"][],
+    successfulResult: (name: ToolCall["name"]) => unknown,
+  ): AgentDecision {
+    const nextTool = researchTools.find((name) => successfulResult(name) === undefined);
+    if (!nextTool) throw new Error("Ollama planner produced no valid next research tool.");
+    return {
+      type: "tool_call",
+      call: {
+        name: nextTool,
+        args: {
+          destination: input.request.destination,
+          startDate: input.request.startDate,
+          endDate: input.request.endDate,
+          ...(nextTool === "attractions_lookup" ? { interests: input.request.interests } : {}),
+        },
+      },
+      rationale: `Use the next missing research tool: ${nextTool}.`,
+    };
   }
 }

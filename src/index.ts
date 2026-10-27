@@ -5,11 +5,18 @@ import type { Pace, TripRequest } from "./types.js";
 
 function parseArgs(argv: string[]): TripRequest {
   const values = new Map<string, string>();
-  for (let index = 0; index < argv.length; index += 2) {
+  for (let index = 0; index < argv.length;) {
     const key = argv[index];
-    const value = argv[index + 1];
-    if (!key?.startsWith("--") || !value) throw new Error("Arguments use --name value syntax.");
-    values.set(key.slice(2), value);
+    if (!key?.startsWith("--")) throw new Error("Arguments use --name value syntax.");
+
+    const parts: string[] = [];
+    index += 1;
+    while (index < argv.length && !argv[index].startsWith("--")) {
+      parts.push(argv[index]);
+      index += 1;
+    }
+    if (parts.length === 0) throw new Error(`Missing value for ${key}.`);
+    values.set(key.slice(2), parts.join(" "));
   }
   const destination = values.get("destination");
   const startDate = values.get("start");
