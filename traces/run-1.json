@@ -1,0 +1,337 @@
+{
+  "request": {
+    "destination": "Prague",
+    "startDate": "2026-06-10",
+    "endDate": "2026-06-12",
+    "budget": 900,
+    "pace": "balanced",
+    "interests": [
+      "culture",
+      "food"
+    ],
+    "dietary": [
+      "vegetarian"
+    ]
+  },
+  "itinerary": {
+    "destination": "Prague",
+    "dates": "2026-06-10 to 2026-06-12",
+    "lodging": "Central budget hotel",
+    "transport": "Round trip economy",
+    "totalEstimatedCost": 728,
+    "budgetRemaining": 172,
+    "days": [
+      {
+        "date": "2026-06-10",
+        "morning": "Old Town walking tour",
+        "afternoon": "City food market",
+        "evening": "Dinner near the central square",
+        "estimatedCost": 60
+      },
+      {
+        "date": "2026-06-12",
+        "morning": "Slow breakfast and neighborhood walk",
+        "afternoon": "Riverside park and viewpoint",
+        "evening": "National museum",
+        "estimatedCost": 48
+      }
+    ],
+    "notes": [
+      "Weather-aware plan: 2026-06-10 Partly cloudy; 2026-06-12 Sunny.",
+      "Pace: balanced; interests: culture, food.",
+      "Dietary note: vegetarian."
+    ]
+  },
+  "trace": [
+    {
+      "step": 1,
+      "actor": "agent",
+      "event": "tool_call",
+      "payload": {
+        "type": "tool_call",
+        "call": {
+          "name": "weather_lookup",
+          "args": {
+            "destination": "Prague",
+            "startDate": "2026-06-10",
+            "endDate": "2026-06-12"
+          }
+        },
+        "rationale": "Check conditions before scheduling outdoor activities."
+      }
+    },
+    {
+      "step": 1,
+      "actor": "tool",
+      "event": "success",
+      "payload": {
+        "ok": true,
+        "tool": "weather_lookup",
+        "data": {
+          "forecast": [
+            {
+              "date": "2026-06-10",
+              "condition": "Partly cloudy",
+              "highC": 22,
+              "rainChance": 20
+            },
+            {
+              "date": "2026-06-12",
+              "condition": "Sunny",
+              "highC": 24,
+              "rainChance": 10
+            }
+          ],
+          "advice": "Comfortable walking weather; pack a light layer."
+        }
+      }
+    },
+    {
+      "step": 2,
+      "actor": "agent",
+      "event": "tool_call",
+      "payload": {
+        "type": "tool_call",
+        "call": {
+          "name": "flight_price_lookup",
+          "args": {
+            "destination": "Prague",
+            "startDate": "2026-06-10",
+            "endDate": "2026-06-12"
+          }
+        },
+        "rationale": "Find transport that fits the budget."
+      }
+    },
+    {
+      "step": 2,
+      "actor": "tool",
+      "event": "success",
+      "payload": {
+        "ok": true,
+        "tool": "flight_price_lookup",
+        "data": {
+          "option": "Round trip economy",
+          "price": 280,
+          "currency": "USD",
+          "airline": "MockAir"
+        }
+      }
+    },
+    {
+      "step": 3,
+      "actor": "agent",
+      "event": "tool_call",
+      "payload": {
+        "type": "tool_call",
+        "call": {
+          "name": "lodging_lookup",
+          "args": {
+            "destination": "Prague",
+            "startDate": "2026-06-10",
+            "endDate": "2026-06-12"
+          }
+        },
+        "rationale": "Find lodging for the trip dates."
+      }
+    },
+    {
+      "step": 3,
+      "actor": "tool",
+      "event": "success",
+      "payload": {
+        "ok": true,
+        "tool": "lodging_lookup",
+        "data": {
+          "option": "Central budget hotel",
+          "nightlyRate": 105,
+          "nights": 3,
+          "total": 315,
+          "currency": "USD"
+        }
+      }
+    },
+    {
+      "step": 4,
+      "actor": "agent",
+      "event": "tool_call",
+      "payload": {
+        "type": "tool_call",
+        "call": {
+          "name": "attractions_lookup",
+          "args": {
+            "destination": "Prague",
+            "startDate": "2026-06-10",
+            "endDate": "2026-06-12",
+            "interests": [
+              "culture",
+              "food"
+            ]
+          }
+        },
+        "rationale": "Find activities matching the interests."
+      }
+    },
+    {
+      "step": 4,
+      "actor": "tool",
+      "event": "success",
+      "payload": {
+        "ok": true,
+        "tool": "attractions_lookup",
+        "data": {
+          "activities": [
+            {
+              "name": "Old Town walking tour",
+              "interest": "culture",
+              "price": 0,
+              "hours": 2
+            },
+            {
+              "name": "City food market",
+              "interest": "food",
+              "price": 25,
+              "hours": 2
+            },
+            {
+              "name": "Riverside park and viewpoint",
+              "interest": "outdoors",
+              "price": 0,
+              "hours": 3
+            },
+            {
+              "name": "National museum",
+              "interest": "culture",
+              "price": 18,
+              "hours": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "step": 5,
+      "actor": "agent",
+      "event": "tool_call",
+      "payload": {
+        "type": "tool_call",
+        "call": {
+          "name": "assemble_itinerary",
+          "args": {
+            "request": {
+              "destination": "Prague",
+              "startDate": "2026-06-10",
+              "endDate": "2026-06-12",
+              "budget": 900,
+              "pace": "balanced",
+              "interests": [
+                "culture",
+                "food"
+              ],
+              "dietary": [
+                "vegetarian"
+              ]
+            },
+            "weather": {
+              "forecast": [
+                {
+                  "date": "2026-06-10",
+                  "condition": "Partly cloudy",
+                  "highC": 22,
+                  "rainChance": 20
+                },
+                {
+                  "date": "2026-06-12",
+                  "condition": "Sunny",
+                  "highC": 24,
+                  "rainChance": 10
+                }
+              ],
+              "advice": "Comfortable walking weather; pack a light layer."
+            },
+            "flights": {
+              "option": "Round trip economy",
+              "price": 280,
+              "currency": "USD",
+              "airline": "MockAir"
+            },
+            "lodging": {
+              "option": "Central budget hotel",
+              "nightlyRate": 105,
+              "nights": 3,
+              "total": 315,
+              "currency": "USD"
+            },
+            "attractions": {
+              "activities": [
+                {
+                  "name": "Old Town walking tour",
+                  "interest": "culture",
+                  "price": 0,
+                  "hours": 2
+                },
+                {
+                  "name": "City food market",
+                  "interest": "food",
+                  "price": 25,
+                  "hours": 2
+                },
+                {
+                  "name": "Riverside park and viewpoint",
+                  "interest": "outdoors",
+                  "price": 0,
+                  "hours": 3
+                },
+                {
+                  "name": "National museum",
+                  "interest": "culture",
+                  "price": 18,
+                  "hours": 2
+                }
+              ]
+            }
+          }
+        },
+        "rationale": "Assemble a day-by-day itinerary and verify the budget."
+      }
+    },
+    {
+      "step": 5,
+      "actor": "tool",
+      "event": "success",
+      "payload": {
+        "ok": true,
+        "tool": "assemble_itinerary",
+        "data": {
+          "destination": "Prague",
+          "dates": "2026-06-10 to 2026-06-12",
+          "lodging": "Central budget hotel",
+          "transport": "Round trip economy",
+          "totalEstimatedCost": 728,
+          "budgetRemaining": 172,
+          "days": [
+            {
+              "date": "2026-06-10",
+              "morning": "Old Town walking tour",
+              "afternoon": "City food market",
+              "evening": "Dinner near the central square",
+              "estimatedCost": 60
+            },
+            {
+              "date": "2026-06-12",
+              "morning": "Slow breakfast and neighborhood walk",
+              "afternoon": "Riverside park and viewpoint",
+              "evening": "National museum",
+              "estimatedCost": 48
+            }
+          ],
+          "notes": [
+            "Weather-aware plan: 2026-06-10 Partly cloudy; 2026-06-12 Sunny.",
+            "Pace: balanced; interests: culture, food.",
+            "Dietary note: vegetarian."
+          ]
+        }
+      }
+    }
+  ]
+}
