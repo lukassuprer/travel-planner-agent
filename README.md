@@ -58,6 +58,28 @@ npm start -- \
 
 The CLI prints structured JSON containing the itinerary and the complete trace. If no Ollama key is configured, it uses the offline planner; with a key, the Ollama controller chooses the next tool call but the same local tool implementations enforce the contract and budget.
 
+## Save a custom trace
+
+`npm run trace` regenerates the two fixed, reproducible example traces. To save the output for your own parameters, run the TypeScript entry point directly and redirect its JSON output to a file:
+
+```bash
+npx tsx src/index.ts \
+  --destination London \
+  --start 2026-06-10 \
+  --end 2026-06-12 \
+  --budget 900 \
+  --pace balanced \
+  --interests culture,food,beer \
+  --dietary "high protein" \
+  > traces/london-run.json
+```
+
+Use `npx tsx` instead of `npm start` when redirecting output because npm prints its own script header. The saved file contains both the final itinerary and the complete agent/tool trace:
+
+```bash
+node -e "const x=require('./traces/london-run.json'); console.log(x.itinerary); console.log('Trace events:', x.trace.length)"
+```
+
 ## Traces
 
 Generate the two included successful traces with:
